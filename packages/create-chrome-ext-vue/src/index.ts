@@ -1,0 +1,156 @@
+import { program } from 'commander'
+import { join } from 'path'
+import { mkdirSync, writeFileSync, copyFileSync, readdirSync, statSync, existsSync } from 'fs'
+import { renderFile } from 'ejs'
+import { execSync } from 'child_process'
+import { outro, spinner } from '@clack/prompts'
+import { askQuestions, ScaffoldOptions } from './questions'
+
+const TEMPLATE_DIR = join(__dirname, '..', 'templates')
+
+interface TemplateOptions {
+  name: string
+  description: string
+  hasSidePanel: boolean
+  hasDevTools: boolean
+  hasTab: boolean
+  hasWebview: boolean
+  hasContentScript: boolean
+  hasDemo: boolean
+}
+
+/** 递归复制目录，对 .ejs 文件进行渲染 */
+function copyDir(src: string, dest: string, options: TemplateOptions): void {
+  if (!existsSync(dest)) {
+    mkdirSync(dest, { recursive: true })
+  }
+
+  const entries = readdirSync(src)
+  for (const entry of entries) {
+    const srcPath = join(src, entry)
+    const stat = statSync(srcPath)
+
+    if (stat.isDirectory()) {
+      copyDir(srcPath, join(dest, entry), options)
+      continue
+    }
+
+    const ejsMatch = entry.match(/^(.+)\.ejs$/)
+    if (ejsMatch) {
+      // 渲染 EJS 模板，输出文件名去掉 .ejs 后缀
+      const destPath = join(dest, ejsMatch[1])
+      renderFile(srcPath, options, {}, (err: Error | null, str?: string) => {
+        if (err) {
+          console.error(`Error rendering ${srcPath}:`, err.message)
+          throw err
+        }
+        // 跳过空文件（EJS 条件渲染可能产生空内容，如 binary 文件不应被渲染）
+        if (str && str.trim()) {
+          writeFileSync(destPath, str, 'utf-8')
+        }
+      })
+    } else {
+      // 非模板文件直接复制
+      const destPath = join(dest, entry)
+      copyFileSync(srcPath, destPath)
+    }
+  }
+}
+
+/** 安装依赖 */
+function installDependencies(projectDir: string, packageManager: string): boolean {
+  const installCmd: Record<string, string> = {
+    npm: 'npm install',
+    yarn: 'yarn',
+    pnpm: 'pnpm install'
+  }
+
+  if (packageManager === 'skip') return true
+
+  const cmd = installCmd[packageManager]
+  if (!cmd) return true
+
+  try {
+    execSync(cmd, { cwd: projectDir, stdio: 'inherit' })
+    return true
+  } catch {
+    console.error(`依赖安装失败，请手动在项目目录执行 ${cmd}`)
+    return false
+  }
+}
+
+export async function run(): Promise<void> {
+  program
+    .name('create-chrome-ext-vue')
+    .description('Chrome Extension 开发脚手架（基于 Vue 3 + TypeScript + Webpack）')
+    .argument('[project-name]', '项目名称（默认取当前目录名）')
+    .action(async (projectName?: string) => {
+      const targetDir = projectName ? join(process.cwd(), projectName) : process.cwd()
+
+      if (existsSync(targetDir) && readdirSync(targetDir).length > 0 && projectName) {
+        console.error(`目录 "${targetDir}" 不为空，请选择一个空目录或新目录名`)
+        process.exit(1)
+      }
+
+      const opts = await askQuestions(targetDir)
+      if (!opts) {
+        process.exit(0)
+      }
+
+      const renderSpinner = spinner()
+      renderSpinner.start('正在生成项目文件...')
+
+      try {
+        const templateOpts: TemplateOptions = {
+          name: opts.name,
+          description: opts.description,
+          hasSidePanel: opts.hasSidePanel,
+          hasDevTools: opts.hasDevTools,
+          hasTab: opts.hasTab,
+          hasWebview: opts.hasWebview,
+          hasContentScript: opts.hasContentScript,
+          hasDemo: opts.hasDemo
+        }
+
+        copyDir(TEMPLATE_DIR, targetDir, templateOpts)
+        renderSpinner.stop('项目文件生成完成')
+
+        // 安装依赖
+        if (opts.packageManager !== 'skip') {
+          const installSpinner = spinner()
+          installSpinner.start(`正在安装依赖（${opts.packageManager}）...`)
+          const success = installDependencies(targetDir, opts.packageManager)
+          if (success) {
+            installSpinner.stop('依赖安装完成')
+          } else {
+            installSpinner.stop('依赖安装失败')
+          }
+        }
+
+        // 输出完成信息
+        outro(` 项目创建完成！
+
+  进入项目:
+    cd ${projectName || '.'}
+
+  启动开发:
+    npm run dev
+
+  项目结构:
+    src/
+    ├── popup/           ← Popup UI（Vue 3）
+    ├── background/      ← Service Worker
+    ├── content-scripts/ ← 注入脚本（ISOLATED + MAIN）
+    └── modules/         ← 业务模块目录（在此开发功能）${opts.hasDemo ? `
+
+  已包含 Demo 示例模块，打开浏览器标签页后启动插件即可测试` : ''}
+`)
+      } catch (err: any) {
+        renderSpinner.stop('生成失败')
+        console.error('错误:', err.message)
+        process.exit(1)
+      }
+    })
+
+  program.parse()
+}

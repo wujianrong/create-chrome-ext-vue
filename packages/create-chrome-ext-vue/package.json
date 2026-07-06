@@ -1,0 +1,37 @@
+{
+  "name": "create-chrome-ext-vue",
+  "version": "1.0.0",
+  "description": "CLI scaffolding tool for Chrome Extension projects based on Vue 3",
+  "main": "dist/index.js",
+  "bin": {
+    "create-chrome-ext-vue": "./bin/create-chrome-ext-vue.js"
+  },
+  "files": [
+    "dist",
+    "templates",
+    "bin"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch"
+  },
+  "dependencies": {
+    "@clack/prompts": "^0.7.0",
+    "commander": "^12.1.0",
+    "ejs": "^3.1.10",
+    "ora": "^8.2.0"
+  },
+  "devDependencies": {
+    "@types/ejs": "^3.1.5",
+    "@types/node": "^26.1.0",
+    "typescript": "^5.1.6"
+  },
+  "keywords": [
+    "chrome-extension",
+    "vue3",
+    "cli",
+    "scaffold",
+    "create"
+  ],
+  "license": "MIT"
+}

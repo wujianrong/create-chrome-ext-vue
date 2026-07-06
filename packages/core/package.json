@@ -1,0 +1,35 @@
+{
+  "name": "@chrome-ext-vue/core",
+  "version": "1.0.0",
+  "description": "Chrome Extension framework core — Channel communication, CrossWorldBridge, ModuleRegistry, Base class",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "src"
+  ],
+  "scripts": {
+    "build": "tsc"
+  },
+  "peerDependencies": {
+    "axios": "^1.0.0",
+    "vue": "^3.0.0",
+    "vue-router": "^4.0.0"
+  },
+  "keywords": [
+    "chrome-extension",
+    "vue3",
+    "framework",
+    "channel",
+    "cross-world-bridge"
+  ],
+  "license": "MIT"
+}

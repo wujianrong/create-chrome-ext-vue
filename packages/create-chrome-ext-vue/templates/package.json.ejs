@@ -1,0 +1,49 @@
+{
+  "name": "<%= name %>",
+  "version": "1.0.0",
+  "description": "<%= description %>",
+  "scripts": {
+    "dev": "webpack --config build/webpack.development.js --watch",
+    "build": "webpack --config ./build/webpack.production.js",
+    "build:standalone": "webpack --config ./build/webpack.standalone.js",
+    "build-all": "npm run build && npm run build:standalone && node build/build-zip.js"
+  },
+  "dependencies": {
+    "@chrome-ext-vue/core": "^1.0.0",
+    "@element-plus/icons-vue": "^2.3.0",
+    "axios": "^1.4.0",
+    "cross-env": "^10.1.0",
+    "element-plus": "^2.13.7",
+    "vue": "^3.4.0",
+    "vue-router": "^4.2.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.28.6",
+    "@babel/preset-env": "^7.28.6",
+    "@babel/preset-typescript": "^7.28.5",
+    "@types/chrome": "^0.1.32",
+    "@vue/babel-plugin-jsx": "^2.0.1",
+    "@vue/compiler-sfc": "^3.4.0",
+    "archiver": "^6.0.2",
+    "babel-loader": "^10.0.0",
+    "babel-plugin-lodash": "^3.3.4",
+    "clean-webpack-plugin": "^4.0.0",
+    "copy-webpack-plugin": "^11.0.0",
+    "css-loader": "^6.7.3",
+    "glob": "^10.3.0",
+    "html-loader": "^5.1.0",
+    "html-webpack-plugin": "^5.5.0",
+    "lodash": "^4.17.23",
+    "mini-css-extract-plugin": "^2.7.2",
+    "sass": "^1.97.3",
+    "sass-loader": "^13.2.0",
+    "scss-loader": "^0.0.1",
+    "style-loader": "^3.3.1",
+    "ts-loader": "^9.4.4",
+    "typescript": "^5.1.6",
+    "vue-loader": "^17.4.0",
+    "webpack": "^5.75.0",
+    "webpack-cli": "^5.0.1",
+    "webpack-merge": "^5.8.0"
+  }
+}

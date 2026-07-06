@@ -1,0 +1,161 @@
+const path = require('path')
+const webpack = require('webpack')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
+const { CleanWebpackPlugin } = require('clean-webpack-plugin')
+const CopyWebpackPlugin = require('copy-webpack-plugin')
+const MiniCssExtractPlugin = require('mini-css-extract-plugin')
+const { VueLoaderPlugin } = require('vue-loader')
+
+// 多页面配置（根据 CLI 选项动态生成）
+const pages = {
+  popup: {
+    entry: path.resolve(__dirname, '../src/popup/main.ts'),
+    template: path.resolve(__dirname, '../src/popup/index.html'),
+    filename: 'popup/index.html',
+    title: 'Popup'
+  }<% if (hasSidePanel) { %>,
+  sidepanel: {
+    entry: path.resolve(__dirname, '../src/sidepanel/main.ts'),
+    template: path.resolve(__dirname, '../src/sidepanel/index.html'),
+    filename: 'sidepanel/index.html',
+    title: 'SidePanel'
+  }<% } %><% if (hasWebview) { %>,
+  webview: {
+    entry: path.resolve(__dirname, '../src/webview/main.ts'),
+    template: path.resolve(__dirname, '../src/webview/index.html'),
+    filename: 'webview/index.html',
+    title: 'Webview'
+  }<% } %><% if (hasTab) { %>,
+  tabApp: {
+    entry: path.resolve(__dirname, '../src/tab-app/main.ts'),
+    template: path.resolve(__dirname, '../src/tab-app/index.html'),
+    filename: 'tab-app/index.html',
+    title: 'Tab App'
+  }<% } %>
+}
+
+// 为每个页面生成入口配置
+const entry = {}
+Object.keys(pages).forEach(name => {
+  entry[name] = pages[name].entry
+})
+
+// 为每个页面生成HtmlWebpackPlugin实例
+const htmlWebpackPlugins = Object.keys(pages).map(name => {
+  const page = pages[name]
+  return new HtmlWebpackPlugin({
+    template: page.template,
+    filename: page.filename,
+    title: page.title,
+    chunks: [name],
+    publicPath: '../'
+  })
+})
+
+module.exports = {
+  entry: {
+    ...entry,
+    'background/index': path.resolve(__dirname, '../src/background/index.ts')<% if (hasContentScript) { %>,
+    'content-scripts/cs-isolated': path.resolve(__dirname, '../src/content-scripts/cs-isolated.ts'),
+    'content-scripts/cs-main': path.resolve(__dirname, '../src/content-scripts/cs-main.ts')<% } %>
+  },
+  output: {
+    path: path.resolve(__dirname, '../dist'),
+    filename: '[name].js'
+  },
+  resolve: {
+    extensions: ['.js', '.ts', '.vue', '.json'],
+    alias: {
+      '@': path.resolve(__dirname, '../src'),
+      '@chrome-ext-vue/core': path.resolve(__dirname, '../node_modules/@chrome-ext-vue/core/dist')
+    }
+  },
+  mode: process.env.NODE_ENV === 'production' ? 'production' : 'development',
+  devtool: false,
+  module: {
+    rules: [
+      {
+        test: /\.js|.jsx$/,
+        exclude: /node_modules/,
+        use: {
+          loader: 'babel-loader',
+          options: {
+            plugins: ['@vue/babel-plugin-jsx', 'lodash']
+          }
+        }
+      },
+      {
+        test: /\.(gif|jpe?g|png|bmp|svg)/,
+        type: 'asset',
+        parser: {
+          dataUrlCondition: {
+            maxSize: 10 * 1024
+          }
+        },
+        generator: {
+          filename: 'static/images/[hash:8][ext][query]'
+        }
+      },
+      {
+        test: /\.(eot|woff|woff2|ttf)/,
+        type: 'asset',
+        parser: {
+          dataUrlCondition: {
+            maxSize: 10 * 1024
+          }
+        },
+        generator: {
+          filename: 'static/font/[hash:8][ext][query]'
+        }
+      },
+      {
+        test: /\.vue$/,
+        use: ['vue-loader']
+      },
+      {
+        test: /\.tsx?$/,
+        loader: 'babel-loader',
+        options: {
+          presets: [
+            '@babel/preset-env',
+            [
+              '@babel/preset-typescript',
+              { allExtensions: true }
+            ]
+          ],
+          plugins: ['lodash']
+        }
+      },
+      {
+        test: /\.(c|sa|sc)ss$/,
+        use: [
+          MiniCssExtractPlugin.loader,
+          { loader: 'css-loader' },
+          { loader: 'sass-loader', options: { api: 'modern' } }
+        ]
+      }
+    ]
+  },
+  plugins: [
+    new VueLoaderPlugin(),
+    new webpack.DefinePlugin({
+      __VUE_OPTIONS_API__: JSON.stringify(true),
+      __VUE_PROD_DEVTOOLS__: JSON.stringify(false),
+      __VUE_PROD_HYDRATION_MISMATCH_DETAILS__: JSON.stringify(false),
+      __CROSS_WORLD_SECRET__: JSON.stringify(
+        Math.random().toString(36).slice(2) + Date.now().toString(36)
+      )
+    }),
+    ...htmlWebpackPlugins,
+    new CleanWebpackPlugin(),
+    new CopyWebpackPlugin({
+      patterns: [
+        { from: 'manifest.json' },
+        { from: 'src/assets/', to: 'assets/', noErrorOnMissing: true }
+      ]
+    }),
+    new MiniCssExtractPlugin({
+      filename: '[name].css'
+    })
+  ]
+}

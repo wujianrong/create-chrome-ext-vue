@@ -1,0 +1,45 @@
+/**
+ * 模块注册入口
+ *
+ * 所有业务模块在此通过 moduleRegistry.register() 统一注册，
+ * Popup 首页、Content Script handler 将自动发现已注册的模块。
+ *
+ * 新增模块步骤：
+ *   1. 在 src/modules/ 下创建模块目录（参考 demo/ 示例）
+ *   2. 在下方 import 你的模块
+ *   3. 调用 moduleRegistry.register(yourModule)
+ */
+import { moduleRegistry } from '@chrome-ext-vue/core'
+<% if (hasDemo) { %>
+import demoModule from './demo'
+<% } %><% if (hasDemo && hasSidePanel) { %>
+import demoSidePanelModule from './demo-sidepanel'
+<% } %><% if (hasDemo && hasTab) { %>
+import demoTabModule from './demo-tab'
+<% } %><% if (hasDemo && hasDevTools) { %>
+import demoDevToolsModule from './demo-devtools'
+<% } %>
+
+<% if (hasDemo) { %>
+// Demo 示例模块：展示 Channel + CrossWorldBridge 三层通信链路
+moduleRegistry.register(demoModule)
+
+<% } %><% if (hasDemo && hasSidePanel) { %>
+// Demo SidePanel 示例：展示侧边栏类型模块用法
+moduleRegistry.register(demoSidePanelModule)
+
+<% } %><% if (hasDemo && hasTab) { %>
+// Demo Tab 示例：展示独立标签页类型模块用法
+moduleRegistry.register(demoTabModule)
+
+<% } %><% if (hasDemo && hasDevTools) { %>
+// Demo DevTools 示例：展示 DevTools 面板类型模块配置
+moduleRegistry.register(demoDevToolsModule)
+
+<% } %>
+// ============================================================
+// 在此处注册你的业务模块
+// ============================================================
+//
+// import myModule from './my-module'
+// moduleRegistry.register(myModule)

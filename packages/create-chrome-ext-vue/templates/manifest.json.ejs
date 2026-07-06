@@ -1,0 +1,64 @@
+{
+  "manifest_version": 3,
+  "name": "<%= name %>",
+  "version": "1.0.0",
+  "description": "<%= description %>",
+  "icons": {
+    "16": "assets/images/icon.png",
+    "48": "assets/images/icon.png",
+    "128": "assets/images/icon.png"
+  },
+  "permissions": [
+    "storage",
+    "tabs",
+    "activeTab",
+    "notifications",
+<% if (hasContentScript) { %>    "scripting",
+<% } %><% if (hasSidePanel) { %>    "sidePanel",
+<% } %>    "downloads"
+  ],
+  "host_permissions": [
+    "<all_urls>"
+  ],
+  "background": {
+    "service_worker": "background/index.js"
+  },
+<% if (hasContentScript) { %>
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content-scripts/cs-isolated.js"],
+      "world": "ISOLATED",
+      "run_at": "document_idle"
+    },
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content-scripts/cs-main.js"],
+      "world": "MAIN",
+      "run_at": "document_idle"
+    }
+  ],
+<% } %>
+  "web_accessible_resources": [
+    {
+      "resources": [
+<% if (hasWebview) { %>        "webview/*",
+<% } %><% if (hasTab) { %>        "tab-app/*",
+<% } %><% if (hasSidePanel) { %>        "sidepanel/*"
+<% } %>      ],
+      "matches": ["<all_urls>"]
+    }
+  ],
+  "action": {
+    "default_popup": "popup/index.html",
+    "default_icon": {
+      "16": "assets/images/icon.png",
+      "48": "assets/images/icon.png",
+      "128": "assets/images/icon.png"
+    }
+  }<% if (hasSidePanel) { %>,
+  "side_panel": {
+    "default_path": "sidepanel/index.html"
+  }<% } %>
+
+}

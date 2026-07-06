@@ -1,0 +1,58 @@
+{
+  "id": "5191322",
+  "name": "chrome-condition",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-condition-",
+  "description": "高频工具-chrome插件",
+  "glyphs": [
+    {
+      "icon_id": "1997169",
+      "name": "读取",
+      "font_class": "duqu",
+      "unicode": "e608",
+      "unicode_decimal": 58888
+    },
+    {
+      "icon_id": "1680700",
+      "name": "数据字典",
+      "font_class": "shujuzidian",
+      "unicode": "e666",
+      "unicode_decimal": 58982
+    },
+    {
+      "icon_id": "6536738",
+      "name": "菜单",
+      "font_class": "caidan",
+      "unicode": "e668",
+      "unicode_decimal": 58984
+    },
+    {
+      "icon_id": "695133",
+      "name": "发布",
+      "font_class": "fabu",
+      "unicode": "e631",
+      "unicode_decimal": 58929
+    },
+    {
+      "icon_id": "18170243",
+      "name": "代码,分支,分流,分叉",
+      "font_class": "code-branch",
+      "unicode": "e993",
+      "unicode_decimal": 59795
+    },
+    {
+      "icon_id": "33519",
+      "name": "home_fill",
+      "font_class": "homefill",
+      "unicode": "e6bb",
+      "unicode_decimal": 59067
+    },
+    {
+      "icon_id": "15685201",
+      "name": "闪光灯自动",
+      "font_class": "shanguangdengzidong",
+      "unicode": "e6d3",
+      "unicode_decimal": 59091
+    }
+  ]
+}
