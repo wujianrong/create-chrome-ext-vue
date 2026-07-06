@@ -47,5 +47,8 @@
     "channel",
     "cross-world-bridge"
   ],
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "@types/chrome": "^0.2.2"
+  }
 }

@@ -1,1 +1,3 @@
 node_modules/
+packages/core/dist/
+packages/create-chrome-ext-vue/dist/

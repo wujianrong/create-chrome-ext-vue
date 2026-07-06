@@ -47,7 +47,13 @@ export class Channel {
     return new Promise((resolve, reject) => {
       chrome.runtime.sendMessage(message, () => {
         if (chrome.runtime.lastError) {
-          reject(chrome.runtime.lastError)
+          const errMsg = chrome.runtime.lastError.message ?? ''
+          // fire-and-forget 模式下"接收端不存在"是预期行为，不应视为错误
+          if (errMsg.includes('Receiving end does not exist')) {
+            resolve()
+          } else {
+            reject(chrome.runtime.lastError)
+          }
         } else {
           resolve()
         }
@@ -60,7 +66,13 @@ export class Channel {
     return new Promise((resolve, reject) => {
       chrome.tabs.sendMessage(tabId, message, () => {
         if (chrome.runtime.lastError) {
-          reject(chrome.runtime.lastError)
+          const errMsg = chrome.runtime.lastError.message ?? ''
+          // fire-and-forget 模式下"接收端不存在"是预期行为，不应视为错误
+          if (errMsg.includes('Receiving end does not exist')) {
+            resolve()
+          } else {
+            reject(chrome.runtime.lastError)
+          }
         } else {
           resolve()
         }
