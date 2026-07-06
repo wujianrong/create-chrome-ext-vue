@@ -1,6 +1,6 @@
 {
   "name": "create-chrome-ext-vue-monorepo",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "private": true,
   "description": "Monorepo for create-chrome-ext-vue — Chrome Extension scaffolding with Vue 3",
   "workspaces": [
