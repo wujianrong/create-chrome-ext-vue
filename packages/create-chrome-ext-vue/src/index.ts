@@ -1,5 +1,5 @@
 import { program } from 'commander'
-import { join } from 'path'
+import { join, relative } from 'path'
 import { mkdirSync, writeFileSync, copyFileSync, readdirSync, statSync, existsSync } from 'fs'
 import { renderFile } from 'ejs'
 import { execSync } from 'child_process'
@@ -19,8 +19,28 @@ interface TemplateOptions {
   hasDemo: boolean
 }
 
-/** 递归复制目录，对 .ejs 文件进行渲染 */
+/** 根据 TemplateOptions 计算需要跳过的目录（相对于 templates/ 的路径） */
+function getExcludeDirs(options: TemplateOptions): string[] {
+  const excludeDirs: string[] = []
+  if (!options.hasDemo) {
+    excludeDirs.push(
+      'src/modules/demo',
+      'src/modules/demo-devtools',
+      'src/modules/demo-sidepanel',
+      'src/modules/demo-tab'
+    )
+  } else {
+    if (!options.hasDevTools) excludeDirs.push('src/modules/demo-devtools')
+    if (!options.hasSidePanel) excludeDirs.push('src/modules/demo-sidepanel')
+    if (!options.hasTab) excludeDirs.push('src/modules/demo-tab')
+  }
+  return excludeDirs
+}
+
+/** 递归复制目录，对 .ejs 文件进行渲染，跳过排除列表中的目录 */
 function copyDir(src: string, dest: string, options: TemplateOptions): void {
+  const excludeDirs = getExcludeDirs(options)
+
   if (!existsSync(dest)) {
     mkdirSync(dest, { recursive: true })
   }
@@ -31,6 +51,10 @@ function copyDir(src: string, dest: string, options: TemplateOptions): void {
     const stat = statSync(srcPath)
 
     if (stat.isDirectory()) {
+      const relPath = relative(TEMPLATE_DIR, srcPath).replace(/\\/g, '/')
+      if (excludeDirs.includes(relPath)) {
+        continue
+      }
       copyDir(srcPath, join(dest, entry), options)
       continue
     }
