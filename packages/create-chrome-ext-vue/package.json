@@ -1,6 +1,6 @@
 {
   "name": "create-chrome-ext-vue",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "CLI scaffolding tool for Chrome Extension projects based on Vue 3",
   "main": "dist/index.js",
   "bin": {
