@@ -65,7 +65,6 @@ src/
 ├── content-scripts/   # 注入脚本，运行在目标页面隔离环境中
 ├── popup/             # 扩展弹窗 UI（Vue 3）
 │   └── views/         # 页面视图组件
-├── webview/           # 独立 Webview 页面（独立 HTML 入口）
 ├── core/              # 核心能力封装
 │   ├── interface.ts   # 核心接口定义（I 前缀）
 │   ├── base/          # Chrome API 封装

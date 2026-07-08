@@ -14,7 +14,6 @@ interface TemplateOptions {
   hasSidePanel: boolean
   hasDevTools: boolean
   hasTab: boolean
-  hasWebview: boolean
   hasContentScript: boolean
   hasDemo: boolean
 }
@@ -131,7 +130,6 @@ export async function run(): Promise<void> {
           hasSidePanel: opts.hasSidePanel,
           hasDevTools: opts.hasDevTools,
           hasTab: opts.hasTab,
-          hasWebview: opts.hasWebview,
           hasContentScript: opts.hasContentScript,
           hasDemo: opts.hasDemo
         }

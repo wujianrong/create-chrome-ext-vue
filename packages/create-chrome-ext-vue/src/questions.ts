@@ -6,7 +6,6 @@ export interface ScaffoldOptions {
   hasSidePanel: boolean
   hasDevTools: boolean
   hasTab: boolean
-  hasWebview: boolean
   hasContentScript: boolean
   hasDemo: boolean
   packageManager: 'npm' | 'yarn' | 'pnpm' | 'skip'
@@ -63,11 +62,6 @@ export async function askQuestions(targetDir: string): Promise<ScaffoldOptions |
         confirm({
           message: '启用 Tab 独立页面？',
           initialValue: false
-        }),
-      webview: () =>
-        confirm({
-          message: '启用 Webview 独立页面？',
-          initialValue: false
         })
     },
     {
@@ -116,7 +110,6 @@ export async function askQuestions(targetDir: string): Promise<ScaffoldOptions |
     hasSidePanel: entryResult.sidePanel as boolean,
     hasDevTools: entryResult.devTools as boolean,
     hasTab: entryResult.tab as boolean,
-    hasWebview: entryResult.webview as boolean,
     hasContentScript: entryResult.contentScript as boolean,
     hasDemo: hasDemo as boolean,
     packageManager: pkgManager,

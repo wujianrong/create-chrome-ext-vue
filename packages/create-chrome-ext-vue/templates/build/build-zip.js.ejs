@@ -1,8 +1,8 @@
 /**
  * build-all 后处理脚本：将 dist/ 打包为 zip
  *
- * 读取 manifest.json 获取版本号，使用 archiver 将 dist/ 目录
- * 打包为 zip/chrome-高频工具盒+{version}.zip，内部目录名保持相同格式。
+ * 读取 manifest.json 获取版本��，使用 archiver 将 dist/ 目录
+ * 打包为 zip/<%= name %>-{version}.zip，内部目录名保持相同格式。
  */
 
 const fs = require('fs')
@@ -14,10 +14,10 @@ const DIST = path.join(ROOT, 'dist')
 const ZIP_DIR = path.join(ROOT, 'zip')
 const MANIFEST_PATH = path.join(ROOT, 'manifest.json')
 
-// 读取 manifest.json 获取版本号
+// 读取 manifest.json 获取版本��
 const manifest = JSON.parse(fs.readFileSync(MANIFEST_PATH, 'utf-8'))
 const version = manifest.version
-const dirName = `chrome-高频工具盒`
+const dirName = '<%= name %>'
 const zipName = `${dirName}-${version}.zip`
 const zipPath = path.join(ZIP_DIR, zipName)
 
