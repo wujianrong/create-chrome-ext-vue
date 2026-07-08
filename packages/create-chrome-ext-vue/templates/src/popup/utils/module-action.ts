@@ -1,5 +1,5 @@
 import type { Router } from 'vue-router'
-import type { ModuleMeta } from '@chrome-ext-vue/core'
+import type { ModuleMeta } from '@/core'
 
 /** 根据模块的 actionType 分发导航或外部操作 */
 export function handleModuleAction(module: ModuleMeta, router: Router): void {

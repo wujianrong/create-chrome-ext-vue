@@ -10,7 +10,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import ModuleCard from './ModuleCard.vue'
-import type { ModuleMeta } from '@chrome-ext-vue/core'
+import type { ModuleMeta } from '@/core'
 
 const props = defineProps<{
   modules: ModuleMeta[]

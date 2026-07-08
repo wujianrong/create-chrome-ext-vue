@@ -1,5 +1,5 @@
 import { ref, watch } from 'vue';
-import { storage } from '@chrome-ext-vue/core'
+import { storage } from '@/core'
 
 const STORAGE_KEY = 'popup_theme';
 type Theme = 'dark' | 'light';

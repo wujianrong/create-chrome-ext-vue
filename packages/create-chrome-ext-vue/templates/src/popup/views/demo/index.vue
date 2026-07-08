@@ -8,7 +8,7 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
 import { ElMessage } from 'element-plus'
-import { Base } from '@chrome-ext-vue/core'
+import { Base } from '@/core'
 
 const base = new Base()
 const result = ref('')

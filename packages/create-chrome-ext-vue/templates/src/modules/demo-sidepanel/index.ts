@@ -4,7 +4,7 @@
  * SidePanel 类型的模块通过 chrome.sidePanel API 打开，
  * 在浏览器侧边栏中展示内容。
  */
-import type { IModule } from '@chrome-ext-vue/core'
+import type { IModule } from '@/core'
 
 const demoModule: IModule = {
   name: 'demo-sidepanel',

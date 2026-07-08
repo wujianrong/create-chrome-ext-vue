@@ -28,8 +28,8 @@ import { computed, ref, shallowRef, onMounted } from 'vue'
 import { ElIcon } from 'element-plus'
 import { Sunny, Moon, Loading, Warning } from '@element-plus/icons-vue'
 import type { Component, Ref } from 'vue'
-import { moduleRegistry } from '@chrome-ext-vue/core'
-import type { IModule } from '@chrome-ext-vue/core'
+import { moduleRegistry } from '@/core'
+import type { IModule } from '@/core'
 import { useTheme } from './composables/useTheme'
 
 const moduleName = ref<string>('')

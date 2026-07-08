@@ -29,8 +29,8 @@ import { Sunny, Moon } from '@element-plus/icons-vue'
 import type { Ref } from 'vue'
 import { useRoute } from 'vue-router'
 import type { Component } from 'vue'
-import type { IModule } from '@chrome-ext-vue/core'
-import { moduleRegistry } from '@chrome-ext-vue/core'
+import type { IModule } from '@/core'
+import { moduleRegistry } from '@/core'
 import { useTheme } from '../composables/useTheme'
 
 const route = useRoute()

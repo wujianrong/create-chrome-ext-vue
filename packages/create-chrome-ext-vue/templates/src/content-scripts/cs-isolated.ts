@@ -1,4 +1,4 @@
-import { moduleRegistry, bridge } from '@chrome-ext-vue/core'
+import { moduleRegistry, bridge } from '@/core'
 import '../modules/index'
 
 // 初始化跨世界通信桥（ISOLATED 端）

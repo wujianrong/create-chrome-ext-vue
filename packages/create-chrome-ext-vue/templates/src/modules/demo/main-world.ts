@@ -6,7 +6,7 @@
  *   - 访问页面 window 对象上的 JS 变量
  *   - DevTools 可断点调试
  */
-import { bridge } from '@chrome-ext-vue/core'
+import { bridge } from '@/core'
 
 export function registerMainWorldHandlers(): void {
   bridge.on('DEMO_GET_PAGE_TITLE', async () => {

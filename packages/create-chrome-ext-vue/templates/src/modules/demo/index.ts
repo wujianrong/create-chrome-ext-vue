@@ -6,7 +6,7 @@
  *   → CrossWorldBridge (postMessage) → Content Script (MAIN)
  *   → 读取 document.title → 逐级返回
  */
-import type { IModule } from '@chrome-ext-vue/core'
+import type { IModule } from '@/core'
 import { registerContentHandlers } from './content'
 import { registerMainWorldHandlers } from './main-world'
 

@@ -4,7 +4,7 @@ import router from './router'
 import '@/assets/iconfont/iconfont.css'
 import 'element-plus/theme-chalk/dark/css-vars.css'
 import 'element-plus/theme-chalk/src/index.scss'
-import { storage } from '@chrome-ext-vue/core'
+import { storage } from '@/core'
 import { initTheme } from './composables/useTheme'
 
 const STORAGE_KEY = 'popup_last_route'

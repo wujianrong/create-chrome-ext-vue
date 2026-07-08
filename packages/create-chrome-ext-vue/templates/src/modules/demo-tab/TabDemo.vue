@@ -44,7 +44,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { ElCard, ElDivider, ElDescriptions, ElDescriptionsItem, ElButton, ElMessage } from 'element-plus'
-import { Base } from '@chrome-ext-vue/core'
+import { Base } from '@/core'
 
 const base = new Base()
 const storageResult = ref('')

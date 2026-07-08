@@ -55,7 +55,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { ElButton, ElTag, ElDescriptions, ElDescriptionsItem, ElAlert, ElMessage } from 'element-plus'
-import { channelPopup, ChannelType } from '@chrome-ext-vue/core'
+import { channelPopup, ChannelType } from '@/core'
 
 interface PageInfo {
   title: string

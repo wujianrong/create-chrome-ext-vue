@@ -4,7 +4,7 @@
  * Tab 类型的模块通过 chrome.tabs.create() 打开新标签页，
  * 在新标签页中运行完整的 Web 应用。
  */
-import type { IModule } from '@chrome-ext-vue/core'
+import type { IModule } from '@/core'
 
 const demoModule: IModule = {
   name: 'demo-tab',

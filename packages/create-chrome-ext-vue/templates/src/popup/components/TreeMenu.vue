@@ -32,7 +32,7 @@
 import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElIcon } from 'element-plus'
-import type { ModuleMeta } from '@chrome-ext-vue/core'
+import type { ModuleMeta } from '@/core'
 
 const props = defineProps<{
   modules: ModuleMeta[]

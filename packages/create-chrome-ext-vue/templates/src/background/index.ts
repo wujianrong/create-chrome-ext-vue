@@ -1,4 +1,4 @@
-import { createHttpInstance } from '@chrome-ext-vue/core'
+import { createHttpInstance } from '@/core'
 
 console.log('Background script loaded')
 

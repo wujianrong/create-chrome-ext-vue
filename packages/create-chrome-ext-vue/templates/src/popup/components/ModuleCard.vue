@@ -14,7 +14,7 @@
 
 <script setup lang="ts">
 import { ElIcon } from 'element-plus'
-import type { ModuleMeta } from '@chrome-ext-vue/core'
+import type { ModuleMeta } from '@/core'
 
 defineProps<{
   module: ModuleMeta

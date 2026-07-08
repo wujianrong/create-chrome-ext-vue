@@ -7,7 +7,7 @@
  *
  * 此模板展示了模块定义结构，实际 DevTools 入口需要额外配置。
  */
-import type { IModule } from '@chrome-ext-vue/core'
+import type { IModule } from '@/core'
 
 const demoModule: IModule = {
   name: 'demo-devtools',

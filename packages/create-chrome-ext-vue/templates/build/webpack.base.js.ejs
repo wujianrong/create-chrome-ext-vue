@@ -66,8 +66,7 @@ module.exports = {
   resolve: {
     extensions: ['.js', '.ts', '.vue', '.json'],
     alias: {
-      '@': path.resolve(__dirname, '../src'),
-      '@chrome-ext-vue/core': path.resolve(__dirname, '../node_modules/@chrome-ext-vue/core/dist')
+      '@': path.resolve(__dirname, '../src')
     }
   },
   mode: process.env.NODE_ENV === 'production' ? 'production' : 'development',
