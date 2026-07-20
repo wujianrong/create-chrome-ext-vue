@@ -1,0 +1,19 @@
+{
+  "name": "create-chrome-ext-vue-template",
+  "version": "1.0.0",
+  "private": false,
+  "description": "Vue 3 + TypeScript Chrome Extension project template for create-chrome-ext-vue CLI",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/wujianrong/create-chrome-ext-vue.git",
+    "directory": "packages/template-vue3"
+  },
+  "author": "wujianrong",
+  "license": "MIT",
+  "keywords": [
+    "chrome-extension",
+    "vue3",
+    "template",
+    "scaffold"
+  ]
+}

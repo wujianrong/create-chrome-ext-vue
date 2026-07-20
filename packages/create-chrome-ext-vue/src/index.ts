@@ -1,12 +1,13 @@
 import { program } from 'commander'
-import { join, relative } from 'path'
+import { join, dirname, relative } from 'path'
 import { mkdirSync, writeFileSync, copyFileSync, readdirSync, statSync, existsSync } from 'fs'
 import { renderFile } from 'ejs'
 import { execSync } from 'child_process'
 import { outro, spinner } from '@clack/prompts'
 import { askQuestions, ScaffoldOptions } from './questions'
 
-const TEMPLATE_DIR = join(__dirname, '..', 'templates')
+/** 模板包名（npm 依赖解析用） */
+const TEMPLATE_PACKAGE = 'create-chrome-ext-vue-template'
 
 interface TemplateOptions {
   name: string
@@ -18,7 +19,56 @@ interface TemplateOptions {
   hasDemo: boolean
 }
 
-/** 根据 TemplateOptions 计算需要跳过的目录（相对于 templates/ 的路径） */
+/**
+ * 解析模板目录路径。
+ *
+ * 优先级：
+ * 1. 命令行 --template 显式指定本地路径
+ * 2. npm 依赖包 create-chrome-ext-vue-template（生产环境）
+ * 3. monorepo workspace 本地路径（开发环境）
+ */
+function resolveTemplateDir(customPath?: string): string {
+  const candidates: Array<{ label: string; path: string }> = []
+
+  // 1. 用户显式指定的模板路径
+  if (customPath) {
+    const absPath = join(process.cwd(), customPath)
+    candidates.push({ label: '--template 参数', path: absPath })
+  }
+
+  // 2. npm 依赖解析
+  try {
+    const pkgJsonPath = require.resolve(`${TEMPLATE_PACKAGE}/package.json`)
+    const dir = dirname(pkgJsonPath)
+    candidates.push({ label: `npm 依赖包 ${TEMPLATE_PACKAGE}`, path: dir })
+  } catch {
+    // 未安装模板包，跳过
+  }
+
+  // 3. monorepo 开发环境回退（dist/ → 父目录 → 兄弟目录）
+  const devPath = join(__dirname, '..', '..', 'template-vue3')
+  candidates.push({ label: '本地开发路径', path: devPath })
+
+  // 按顺序检查，返回第一个存在的路径
+  for (const { label, path } of candidates) {
+    if (existsSync(path)) {
+      // 额外校验：模板目录中应存在关键文件
+      const keyFile = join(path, 'package.json')
+      if (existsSync(keyFile)) {
+        return path
+      }
+    }
+  }
+
+  // 所有路径都不存在，给出明确的错误信息
+  const tried = candidates.map((c) => `  - ${c.label}: ${c.path}`).join('\n')
+  throw new Error(
+    `无法找到模板文件，已尝试以下路径：\n${tried}\n\n` +
+      `请确认模板包已安装（npm install ${TEMPLATE_PACKAGE}）或通过 --template 指定自定义模板路径。`
+  )
+}
+
+/** 根据 TemplateOptions 计算需要跳过的目录（相对于模板根目录的路径） */
 function getExcludeDirs(options: TemplateOptions): string[] {
   const excludeDirs: string[] = []
   if (!options.hasDemo) {
@@ -37,7 +87,7 @@ function getExcludeDirs(options: TemplateOptions): string[] {
 }
 
 /** 递归复制目录，对 .ejs 文件进行渲染，跳过排除列表中的目录 */
-function copyDir(src: string, dest: string, options: TemplateOptions): void {
+function copyDir(templateDir: string, src: string, dest: string, options: TemplateOptions): void {
   const excludeDirs = getExcludeDirs(options)
 
   if (!existsSync(dest)) {
@@ -50,30 +100,39 @@ function copyDir(src: string, dest: string, options: TemplateOptions): void {
     const stat = statSync(srcPath)
 
     if (stat.isDirectory()) {
-      const relPath = relative(TEMPLATE_DIR, srcPath).replace(/\\/g, '/')
+      // 跳过模板包自己的 package.json 和 node_modules 等不相关目录
+      if (entry === 'node_modules' || entry === '.git') continue
+
+      const relPath = relative(templateDir, srcPath).replace(/\\/g, '/')
       if (excludeDirs.includes(relPath)) {
         continue
       }
-      copyDir(srcPath, join(dest, entry), options)
+      copyDir(templateDir, srcPath, join(dest, entry), options)
+      continue
+    }
+
+    // 跳过模板包的 package.json（生成的项目自己有 package.json.ejs）
+    if (entry === 'package.json' && src === templateDir) continue
+
+    // _gitignore → .gitignore（npm 发布会排除 .gitignore）
+    if (entry === '_gitignore') {
+      copyFileSync(srcPath, join(dest, '.gitignore'))
       continue
     }
 
     const ejsMatch = entry.match(/^(.+)\.ejs$/)
     if (ejsMatch) {
-      // 渲染 EJS 模板，输出文件名去掉 .ejs 后缀
       const destPath = join(dest, ejsMatch[1])
       renderFile(srcPath, options, {}, (err: Error | null, str?: string) => {
         if (err) {
           console.error(`Error rendering ${srcPath}:`, err.message)
           throw err
         }
-        // 跳过空文件（EJS 条件渲染可能产生空内容，如 binary 文件不应被渲染）
         if (str && str.trim()) {
           writeFileSync(destPath, str, 'utf-8')
         }
       })
     } else {
-      // 非模板文件直接复制
       const destPath = join(dest, entry)
       copyFileSync(srcPath, destPath)
     }
@@ -107,7 +166,8 @@ export async function run(): Promise<void> {
     .name('create-chrome-ext-vue')
     .description('Chrome Extension 开发脚手架（基于 Vue 3 + TypeScript + Webpack）')
     .argument('[project-name]', '项目名称（默认取当前目录名）')
-    .action(async (projectName?: string) => {
+    .option('--template <path>', '自定义模板路径（本地目录或 npm 包名）')
+    .action(async (projectName?: string, cmdOpts?: { template?: string }) => {
       const targetDir = projectName ? join(process.cwd(), projectName) : process.cwd()
 
       if (existsSync(targetDir) && readdirSync(targetDir).length > 0 && projectName) {
@@ -124,6 +184,7 @@ export async function run(): Promise<void> {
       renderSpinner.start('正在生成项目文件...')
 
       try {
+        const templateDir = resolveTemplateDir(cmdOpts?.template)
         const templateOpts: TemplateOptions = {
           name: opts.name,
           description: opts.description,
@@ -134,7 +195,7 @@ export async function run(): Promise<void> {
           hasDemo: opts.hasDemo
         }
 
-        copyDir(TEMPLATE_DIR, targetDir, templateOpts)
+        copyDir(templateDir, templateDir, targetDir, templateOpts)
         renderSpinner.stop('项目文件生成完成')
 
         // 安装依赖
@@ -149,11 +210,12 @@ export async function run(): Promise<void> {
           }
         }
 
+        const projectDirName = projectName || '.'
         // 输出完成信息
         outro(` 项目创建完成！
 
   进入项目:
-    cd ${projectName || '.'}
+    cd ${projectDirName}
 
   启动开发:
     npm run dev

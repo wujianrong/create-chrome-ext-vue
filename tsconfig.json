@@ -13,10 +13,7 @@
     "removeComments": true,
     "noImplicitAny": true,
     "lib": ["ES2020", "DOM"],
-    "baseUrl": ".",
-    "paths": {
-      "@chrome-ext-vue/core": ["packages/core/src/index.ts"]
-    }
+    "baseUrl": "."
   },
   "include": [
     "packages/**/src/**/*"

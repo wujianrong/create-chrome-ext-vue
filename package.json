@@ -5,5 +5,13 @@
   "description": "Monorepo for create-chrome-ext-vue — Chrome Extension scaffolding with Vue 3",
   "workspaces": [
     "packages/*"
-  ]
+  ],
+  "scripts": {
+    "build": "npm run build --workspace=packages/create-chrome-ext-vue",
+    "publish:template": "npm publish --workspace=packages/template-vue3",
+    "publish:cli": "npm run build && npm publish --workspace=packages/create-chrome-ext-vue",
+    "publish:all": "npm run publish:template && npm run publish:cli",
+    "pack:template": "npm pack --workspace=packages/template-vue3",
+    "pack:cli": "npm run build && npm pack --workspace=packages/create-chrome-ext-vue"
+  }
 }
