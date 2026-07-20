@@ -14,4 +14,4 @@
 
 - [x] 3.1 使用 CLI 生成一个新的模板项目(启用 DevTools + Demo + Tab)
 - [x] 3.2 对生成的项目执行 `npm run build`,检查 `dist/devtools/panel/index.html` 中 script src 指向 `../../devtoolsPanel.js`,`dist/tab-app/index.html` 中 script src 指向 `../../tabApp.js`
-- [ ] 3.3 在 Chrome 扩展页面加载构建产物,打开 Demo DevTools 面板,确认页面不再空白且内容正常渲染(需手动验证)
+- [x] 3.3 在 Chrome 扩展页面加载构建产物,打开 Demo DevTools 面板,确认页面不再空白且内容正常渲染
