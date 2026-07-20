@@ -8,7 +8,7 @@ Chrome 扩展开发脚手架，基于 **Vue 3 + TypeScript + Webpack 5**，内�
 
 ```bash
 # npm
-npx create-chrome-ext-vue my-chrome-ext
+npx create-chrome-ext-vue@latest my-chrome-ext
 
 # 或全局安装后使用
 npm install -g create-chrome-ext-vue

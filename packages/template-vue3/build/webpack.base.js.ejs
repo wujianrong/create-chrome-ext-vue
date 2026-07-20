@@ -12,31 +12,36 @@ const pages = {
     entry: path.resolve(__dirname, '../src/popup/main.ts'),
     template: path.resolve(__dirname, '../src/popup/index.html'),
     filename: 'popup/index.html',
-    title: 'Popup'
+    title: 'Popup',
+    publicPath: '../'
   }<% if (hasSidePanel) { %>,
   sidepanel: {
     entry: path.resolve(__dirname, '../src/sidepanel/main.ts'),
     template: path.resolve(__dirname, '../src/sidepanel/index.html'),
     filename: 'sidepanel/index.html',
-    title: 'SidePanel'
+    title: 'SidePanel',
+    publicPath: '../'
   }<% } %><% if (hasTab) { %>,
   tabApp: {
     entry: path.resolve(__dirname, '../src/tab-app/main.ts'),
     template: path.resolve(__dirname, '../src/tab-app/index.html'),
     filename: 'tab-app/index.html',
-    title: 'Tab App'
+    title: 'Tab App',
+    publicPath: '../'
   }<% } %><% if (hasDevTools) { %>,
   devtools: {
     entry: path.resolve(__dirname, '../src/devtools/index.ts'),
     template: path.resolve(__dirname, '../src/devtools/index.html'),
     filename: 'devtools/index.html',
-    title: 'DevTools'
+    title: 'DevTools',
+    publicPath: '../'
   },
   devtoolsPanel: {
     entry: path.resolve(__dirname, '../src/devtools/panel/main.ts'),
     template: path.resolve(__dirname, '../src/devtools/panel/index.html'),
     filename: 'devtools/panel/index.html',
-    title: 'DevTools Panel'
+    title: 'DevTools Panel',
+    publicPath: '../../'
   }<% } %>
 }
 
@@ -54,7 +59,7 @@ const htmlWebpackPlugins = Object.keys(pages).map(name => {
     filename: page.filename,
     title: page.title,
     chunks: [name],
-    publicPath: '../'
+    publicPath: page.publicPath
   })
 })
 

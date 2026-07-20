@@ -1,6 +1,6 @@
 {
   "name": "create-chrome-ext-vue-template",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "private": false,
   "description": "Chrome Extension 项目模板（Vue 3 + TypeScript + Webpack 5）— create-chrome-ext-vue CLI 脚手架配套模板包",
   "repository": {
