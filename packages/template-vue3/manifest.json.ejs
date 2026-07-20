@@ -65,6 +65,8 @@
   }<% if (hasSidePanel) { %>,
   "side_panel": {
     "default_path": "sidepanel/index.html"
-  }<% } %>
+  }<% } %><% if (hasDevTools) { %>,
+  "devtools_page": "devtools/index.html"
+<% } %>
 
 }

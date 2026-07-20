@@ -1,5 +1,6 @@
 import type { Router } from 'vue-router'
 import type { ModuleMeta } from '@/core'
+import { ElMessage } from 'element-plus'
 
 /** 根据模块的 actionType 分发导航或外部操作 */
 export function handleModuleAction(module: ModuleMeta, router: Router): void {
@@ -13,8 +14,9 @@ export function handleModuleAction(module: ModuleMeta, router: Router): void {
       }
       break
     case 'devtools':
-      // 占位：后续实现 devtools 入口逻辑
-      console.log(`[ModuleAction] ${module.actionType} 入口：${module.label}`)
+      // Chrome devtools_page 面板只能通过 F12 → DevTools 中手动打开，
+      // 无法通过 API 从 Popup 自动打开。
+      ElMessage.info(`请按 F12 打开开发者工具，在「${module.label}」面板中查看功能`)
       break
     case 'sidepanel':
       // SidePanel 打开逻辑

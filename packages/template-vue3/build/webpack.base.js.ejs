@@ -25,6 +25,18 @@ const pages = {
     template: path.resolve(__dirname, '../src/tab-app/index.html'),
     filename: 'tab-app/index.html',
     title: 'Tab App'
+  }<% } %><% if (hasDevTools) { %>,
+  devtools: {
+    entry: path.resolve(__dirname, '../src/devtools/index.ts'),
+    template: path.resolve(__dirname, '../src/devtools/index.html'),
+    filename: 'devtools/index.html',
+    title: 'DevTools'
+  },
+  devtoolsPanel: {
+    entry: path.resolve(__dirname, '../src/devtools/panel/main.ts'),
+    template: path.resolve(__dirname, '../src/devtools/panel/index.html'),
+    filename: 'devtools/panel/index.html',
+    title: 'DevTools Panel'
   }<% } %>
 }
 

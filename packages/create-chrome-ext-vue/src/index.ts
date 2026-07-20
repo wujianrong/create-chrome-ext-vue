@@ -85,6 +85,7 @@ function getExcludeDirs(options: TemplateOptions): string[] {
   }
   if (!options.hasSidePanel) excludeDirs.push('src/sidepanel')
   if (!options.hasTab) excludeDirs.push('src/tab-app')
+  if (!options.hasDevTools) excludeDirs.push('src/devtools')
   return excludeDirs
 }
 
