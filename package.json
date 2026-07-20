@@ -7,11 +7,11 @@
     "packages/*"
   ],
   "scripts": {
-    "build": "npm run build --workspace=packages/create-chrome-ext-vue",
-    "publish:template": "npm publish --workspace=packages/template-vue3",
-    "publish:cli": "npm run build && npm publish --workspace=packages/create-chrome-ext-vue",
+    "build": "npm -w packages/create-chrome-ext-vue run build",
+    "publish:template": "npm -w packages/template-vue3 publish",
+    "publish:cli": "npm -w packages/create-chrome-ext-vue publish",
     "publish:all": "npm run publish:template && npm run publish:cli",
-    "pack:template": "npm pack --workspace=packages/template-vue3",
-    "pack:cli": "npm run build && npm pack --workspace=packages/create-chrome-ext-vue"
+    "pack:template": "npm -w packages/template-vue3 pack",
+    "pack:cli": "npm -w packages/create-chrome-ext-vue pack"
   }
 }

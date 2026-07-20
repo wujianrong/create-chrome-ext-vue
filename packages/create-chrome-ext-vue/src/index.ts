@@ -83,11 +83,13 @@ function getExcludeDirs(options: TemplateOptions): string[] {
     if (!options.hasSidePanel) excludeDirs.push('src/modules/demo-sidepanel')
     if (!options.hasTab) excludeDirs.push('src/modules/demo-tab')
   }
+  if (!options.hasSidePanel) excludeDirs.push('src/sidepanel')
+  if (!options.hasTab) excludeDirs.push('src/tab-app')
   return excludeDirs
 }
 
 /** 递归复制目录，对 .ejs 文件进行渲染，跳过排除列表中的目录 */
-function copyDir(templateDir: string, src: string, dest: string, options: TemplateOptions): void {
+async function copyDir(templateDir: string, src: string, dest: string, options: TemplateOptions): Promise<void> {
   const excludeDirs = getExcludeDirs(options)
 
   if (!existsSync(dest)) {
@@ -107,7 +109,7 @@ function copyDir(templateDir: string, src: string, dest: string, options: Templa
       if (excludeDirs.includes(relPath)) {
         continue
       }
-      copyDir(templateDir, srcPath, join(dest, entry), options)
+      await copyDir(templateDir, srcPath, join(dest, entry), options)
       continue
     }
 
@@ -123,15 +125,15 @@ function copyDir(templateDir: string, src: string, dest: string, options: Templa
     const ejsMatch = entry.match(/^(.+)\.ejs$/)
     if (ejsMatch) {
       const destPath = join(dest, ejsMatch[1])
-      renderFile(srcPath, options, {}, (err: Error | null, str?: string) => {
-        if (err) {
-          console.error(`Error rendering ${srcPath}:`, err.message)
-          throw err
+      try {
+        const content = await renderFile(srcPath, options, {})
+        if (content && content.trim()) {
+          writeFileSync(destPath, content, 'utf-8')
         }
-        if (str && str.trim()) {
-          writeFileSync(destPath, str, 'utf-8')
-        }
-      })
+      } catch (err: any) {
+        console.error(`Error rendering ${srcPath}:`, err.message)
+        throw err
+      }
     } else {
       const destPath = join(dest, entry)
       copyFileSync(srcPath, destPath)
@@ -195,7 +197,7 @@ export async function run(): Promise<void> {
           hasDemo: opts.hasDemo
         }
 
-        copyDir(templateDir, templateDir, targetDir, templateOpts)
+        await copyDir(templateDir, templateDir, targetDir, templateOpts)
         renderSpinner.stop('项目文件生成完成')
 
         // 安装依赖

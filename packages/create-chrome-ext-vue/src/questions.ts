@@ -1,4 +1,4 @@
-import { text, confirm, multiselect, group, intro, outro, isCancel } from '@clack/prompts'
+import { text, confirm, select, group, intro, outro, isCancel } from '@clack/prompts'
 
 export interface ScaffoldOptions {
   name: string
@@ -86,15 +86,14 @@ export async function askQuestions(targetDir: string): Promise<ScaffoldOptions |
     return null
   }
 
-  const pkgChoice = await multiselect({
+  const pkgChoice = await select({
     message: '包管理器',
     options: [
       { value: 'npm', label: 'npm', hint: '推荐' },
       { value: 'yarn', label: 'yarn' },
       { value: 'pnpm', label: 'pnpm' },
       { value: 'skip', label: '跳过安装', hint: '我自己装' }
-    ],
-    required: true
+    ]
   })
 
   if (isCancel(pkgChoice) || !pkgChoice) {
@@ -102,7 +101,7 @@ export async function askQuestions(targetDir: string): Promise<ScaffoldOptions |
     return null
   }
 
-  const pkgManager = (Array.isArray(pkgChoice) ? pkgChoice[0] : pkgChoice) as 'npm' | 'yarn' | 'pnpm' | 'skip'
+  const pkgManager = pkgChoice as 'npm' | 'yarn' | 'pnpm' | 'skip'
 
   return {
     name: (projectName as string).trim(),

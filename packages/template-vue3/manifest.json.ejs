@@ -38,16 +38,23 @@
       "run_at": "document_idle"
     }
   ],
-<% } %>
+<% } %><% if (hasTab || hasSidePanel) { %>
   "web_accessible_resources": [
     {
       "resources": [
-<% if (hasTab) { %>        "tab-app/*",
-<% } %><% if (hasSidePanel) { %>        "sidepanel/*"
-<% } %>      ],
+<% if (hasTab && hasSidePanel) { %>
+        "tab-app/*",
+        "sidepanel/*"
+<% } else if (hasTab) { %>
+        "tab-app/*"
+<% } else if (hasSidePanel) { %>
+        "sidepanel/*"
+<% } %>
+      ],
       "matches": ["<all_urls>"]
     }
   ],
+<% } %>
   "action": {
     "default_popup": "popup/index.html",
     "default_icon": {
